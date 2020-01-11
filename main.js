@@ -1,33 +1,59 @@
 $(document).ready(() => {
     setWord()
     input.value = ""
+    domTimer.innerHTML = time
+    domScore.innerHTML = score
 })
 
-// let wordsData = "Lorem ipsum dolor sit amet consectetur adipiscing elit Curabitur leo neque interdum interdum purus ut" 
-//     + "semper tincidunt felis Nunc tempor eros in tristique faucibus Donec pellentesque purus id leo ullamcorper a feugiat nulla"
-//     + "consectetur Pellentesque metus neque ultrices eget lacinia id efficitur nec augue Nunc auctor mi eu rutrum congue Nullam ac" 
-//     + "mauris vel urna pharetra dapibus Integer in tincidunt purus vitae tincidunt lacus Sed in erat non nisi iaculis pretium hendrerit"
-//     + "nec turpis Nullam a tortor nec ipsum pulvinar efficitur Curabitur enim enim placerat quis lacinia in semper a orci Suspendisse"
-//     + "vel diam eget nisi vestibulum laoreet ut vitae sapien Etiam sollicitudin justo at suscipit mattis Phasellus sit amet tincidunt"
-//     + "metus Vivamus auctor sem et blandit dignissim elit turpis convallis leo vel vehicula lectus orci eu erat In hac habitasse"
-//     + "platea dictumst Cras ut laoreet felis"
+/// AUDIO/FX
 
-// var words = wordsData.toLowerCase().split(" ")
-// var words = wordsData.toLowerCase().split(" ")
+var fxCompleted = new Howl({
+    src: ['extras/audioFX/word_complete.wav'],
+    volume: 0.5
+})
 
-var out = document.getElementById("word")
+var fxCorrect = new Howl({
+    src: ['extras/audioFX/correct_sound.mp3'],
+    volume: 0.5
+})
+
+var fxWrong = new Howl({
+    src: ['extras/audioFX/wrong_sound.wav'],
+    sprite: {
+        wrong: [0, 2600]
+    },
+    volume: 0.5
+})
+
+// VARIABLES
+
+var output = document.getElementById("word")
 var input = document.getElementById("userInput")
+var domTimer = document.getElementById("timer")
+var domScore = document.getElementById("score")
+var btnStart = document.getElementById("btnStart")
+var btnRestart = document.getElementById("btnRestart")
 
 var currWord = ""
 var tempWord = ""
 var aux = ""
 var counter = 0
 
+var time = 0
+var score = 0
+
+// FUNCTIONS
+
 function setWord() {
     let random = Math.floor(Math.random() * words.length)
     currWord = words[random]
     tempWord = currWord
-    out.innerHTML = currWord
+    output.innerHTML = currWord
+}
+
+function setTimer() {
+    time += 1
+    domTimer.innerHTML = time
 }
 
 input.addEventListener('keyup', (event) => {
@@ -35,15 +61,21 @@ input.addEventListener('keyup', (event) => {
 
     if (x == currWord.charAt(counter)) {
         tempWord = tempWord.slice(tempWord.indexOf(x) + 1)
-        counter++
         // console.log(tempWord)
+        fxCorrect.play()
         aux += x
         // console.log("aux = " + aux)
-        out.innerHTML = ""
-        out.innerHTML = aux.fontcolor("blue") + tempWord
+        output.innerHTML = ""
+        output.innerHTML = aux.fontcolor("red") + tempWord
+        counter++
     } else {
         let string = String(input.value)
         input.value = string.slice(0, string.length - 1)
+        fxWrong.stop()
+        fxWrong.play('wrong')
+
+        score -= 10
+        domScore.innerHTML = score
     }
 
     if (counter === currWord.length) {
@@ -52,5 +84,23 @@ input.addEventListener('keyup', (event) => {
         input.value = ""
         counter = 0
         aux = ""
+
+        fxCompleted.play()
+
+        score += 25
+        domScore.innerHTML = score
     }
+})
+
+var intervalTimer
+btnStart.addEventListener('click', () => {
+    intervalTimer = setInterval(setTimer, 1000)
+})
+
+btnRestart.addEventListener('click', () => {
+    clearInterval(intervalTimer)
+    score = 0
+    time = 0
+    domTimer.innerHTML = time
+    domScore.innerHTML = score
 })

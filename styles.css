@@ -1,0 +1,11 @@
+.life {
+    position: fixed;
+    top: 0;
+    left: calc(100vw - 23em);   
+}
+
+.buttons {
+    position: fixed;
+    top: calc(0vh + 4.75em);
+    left: calc(100vw - 25em);   
+}
