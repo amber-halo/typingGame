@@ -1,7 +1,12 @@
 .life {
     position: fixed;
-    top: 0;
-    left: calc(100vw - 23em);   
+    top: calc(0vh + 0.5em);
+    left: calc(100vw - 26.5em);  
+    
+    width: 200px;
+    height: 40px;
+
+    background-color: red;
 }
 
 .buttons {

@@ -94,6 +94,8 @@ input.addEventListener('keyup', (event) => {
 
 var intervalTimer
 btnStart.addEventListener('click', () => {
+    $("#userInput").removeAttr("disabled")
+    input.focus()
     intervalTimer = setInterval(setTimer, 1000)
 })
 
