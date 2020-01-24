@@ -11,8 +11,11 @@
     <title>Typing Game</title>
 </head>
 <body>
-    <div class="container border">
-        <div class="row border">
+
+    <video src="extras/video/starts.mp4"  id="video"></video>
+
+    <div class="container">
+        <div class="row">
             <div class="m-auto words">
                 <button class="btn btn-primary" type="button" id="btnPause">Pausar</button>
                 <h1 id="word"></h1>
@@ -23,6 +26,9 @@
                 <progress value="100" max="100" id="healthBar"></progress>
             </div>
 
+            <div class="multiplier">
+                <h2 id="multiplier"></h2>
+            </div>
 
         </div>
 
@@ -37,14 +43,14 @@
             </div>
         </div>
 
-        <div class="mt-5 row border">
+        <div class="mt-5 row">
             <div class="m-auto p-2 timer">
                 <h4 class="d-inline">Tiempo:</h4>
                 <h4 class="d-inline ml-3" id="timer">000000000</h4>
             </div>
         </div>
 
-        <div class="row border">
+        <div class="row">
             <div class="m-auto p-2 score">
                 <h4 class="d-inline">Puntaje:</h4>
                 <h4 class="d-inline ml-3" id="score">000000000</h4>

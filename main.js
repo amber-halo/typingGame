@@ -27,6 +27,13 @@ var fxWrong = new Howl({
     volume: 0.5
 })
 
+// CONSTANTS
+
+var HEALTH_RATE = 250
+const HEALTH_ADD = 7
+const SCORE_ADD = 5
+const SCORE_REM = 10
+
 // VARIABLES
 
 var output = document.getElementById("word")
@@ -37,11 +44,14 @@ var btnStart = document.getElementById("btnStart")
 var btnRestart = document.getElementById("btnRestart")
 var btnPause = document.getElementById("btnPause")
 var health = document.getElementById("healthBar")
+var multiplier = document.getElementById("multiplier")
+var video = document.getElementById("video")
 
 var currWord = ""
 var tempWord = ""
 var aux = ""
 var counter = 0
+var multCounter = 0
 
 var time = 0
 var score = 0
@@ -49,6 +59,10 @@ var running = false
 
 var intervalTimer
 var intervalHealth
+
+var healthUpdate = HEALTH_ADD
+var scoreUpdate = SCORE_ADD
+var multiply = 1
 
 // FUNCTIONS
 
@@ -61,6 +75,10 @@ function setWord() {
 
 function setTimer() {
     time += 1
+    if (time % 80 == 0) {
+        HEALTH_RATE -= 10
+        console.log("health_rate = " + HEALTH_RATE)
+    }
     domTimer.innerHTML = time
 }
 
@@ -88,16 +106,32 @@ input.addEventListener('keyup', (event) => {
         aux += x
         // console.log("aux = " + aux)
         output.innerHTML = ""
-        output.innerHTML = aux.fontcolor("red") + tempWord
+        output.innerHTML = aux.fontcolor("white") + tempWord
         counter++
+        multCounter++
+
+        if (multCounter % 10 == 0) {
+            multiply++
+            scoreUpdate = SCORE_ADD * multiply
+            multiplier.innerHTML = multiply + "x"
+
+            if (multiply % 5 == 0) {
+                healthUpdate = HEALTH_ADD * (multiply / 4)
+                console.log(healthUpdate)
+            }
+        }
     } else {
         let string = String(input.value)
         input.value = string.slice(0, string.length - 1)
         fxWrong.stop()
         fxWrong.play('wrong')
 
-        score -= 10
+        scoreUpdate = SCORE_ADD
+        healthUpdate = HEALTH_ADD
+        multiply = 1
+        score -= SCORE_REM
         domScore.innerHTML = score
+        multiplier.innerHTML = multiply + "x"
     }
 
     if (counter === currWord.length) {
@@ -109,10 +143,11 @@ input.addEventListener('keyup', (event) => {
 
         fxCompleted.play()
 
-        score += 25
+        // score += SCORE_ADD
+        score += scoreUpdate
         domScore.innerHTML = score
 
-        health.value += 7
+        health.value += healthUpdate
     }
 })
 
@@ -120,10 +155,14 @@ btnStart.addEventListener('click', () => {
     $("#userInput").removeAttr("disabled")
     input.focus()
     intervalTimer = setInterval(setTimer, 1000)
-    intervalHealth = setInterval(startHealthAnimation, 100)
+    intervalHealth = setInterval(startHealthAnimation, HEALTH_RATE)
     $(btnStart).prop("disabled", true)
     $(btnPause).prop("disabled", false)
     running = true
+    // multiplier.innerHTML = "1x"
+    multiply = 1
+    multiplier.innerHTML = multiply + "x"
+    video.play()
 })
 
 btnRestart.addEventListener('click', () => {
@@ -139,6 +178,7 @@ btnRestart.addEventListener('click', () => {
     $(btnPause).prop("disabled", true)
     setWord()
     running = false
+    video.pause()
 })
 
 btnPause.addEventListener('click', () => {
@@ -152,8 +192,24 @@ btnPause.addEventListener('click', () => {
         $(input).prop("disabled", false)
         input.focus()
         intervalTimer = setInterval(setTimer, 1000)
-        intervalHealth = setInterval(startHealthAnimation, 100)
+        intervalHealth = setInterval(startHealthAnimation, HEALTH_RATE)
         btnPause.innerHTML = "Pausar"
         running = true
     }
 })
+
+video.onended = function () {
+    video.play()
+}
+
+video.onplay = function () {
+    video.classList.remove("fade-out")
+    video.classList.add("fade-in")
+}
+
+video.ontimeupdate = function () {
+    if (parseInt(video.currentTime) == 28) {
+        video.classList.remove("fade-in")
+        video.classList.add("fade-out")
+    }
+}
