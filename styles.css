@@ -6,11 +6,23 @@
     width: 200px;
     height: 40px;
 
-    background-color: red;
+    /* background-color: red; */
+}
+
+#healthBar {
+    width: 100%;
+    height: 100%;
 }
 
 .buttons {
     position: fixed;
     top: calc(0vh + 4.75em);
     left: calc(100vw - 25em);   
+}
+
+#btnPause {
+    position: fixed;
+    /* top: 0.5em; */
+    top: calc(0vh + 0.5em);
+    left: 21rem;
 }
